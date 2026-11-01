@@ -1,0 +1,25 @@
+#cloud-config
+package_update: true
+packages: [docker.io, git, curl, ffmpeg]
+groups: [docker]
+users:
+  - default
+  - name: testpress
+    groups: [docker]
+    shell: /bin/bash
+    lock_passwd: true
+
+write_files:
+  - path: /opt/testpress/app.env
+    owner: testpress:testpress
+    permissions: '0640'
+    defer: true
+    content: |
+      APP_ENV=development
+      LOG_LEVEL=info
+
+runcmd:
+  - [systemctl, enable, --now, docker]
+  - [git, clone, 'https://github.com/syed-tp/linux-autmation-labs.git', /opt/testpress/source]
+  - [docker, build, -t, testpress-app, /opt/testpress/source/app]
+  - [docker, run, -d, --name, testpress-app, --restart, unless-stopped, --env-file, /opt/testpress/app.env, -p, '8080:8080', testpress-app] 
