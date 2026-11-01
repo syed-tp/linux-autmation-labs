@@ -1,4 +1,3 @@
-
 #!/usr/bin/env bash
 set -euo pipefail
 
@@ -22,7 +21,7 @@ case "$OS" in
             exit 1
         fi
 
-        for cmd in git curl; do
+        for cmd in git curl rclone; do
             if ! has_command "$cmd"; then
                 echo "[INFO] Installing $cmd..."
                 brew install "$cmd"
@@ -57,7 +56,8 @@ case "$OS" in
             curl \
             openssh-client \
             ca-certificates \
-            snapd
+            snapd \
+            rclone
 
         if ! has_command multipass; then
             echo "[INFO] Installing Multipass..."
@@ -74,7 +74,7 @@ esac
 echo ""
 echo "[INFO] Verifying prerequisites..."
 
-for cmd in git curl ssh multipass; do
+for cmd in git curl ssh multipass rclone; do
     if has_command "$cmd"; then
         echo "[OK] $cmd"
     else
@@ -86,6 +86,10 @@ done
 echo ""
 echo "[INFO] Multipass version:"
 multipass version
+
+echo ""
+echo "[INFO] rclone version:"
+rclone version
 
 echo ""
 echo "[SUCCESS] Setup completed!"
