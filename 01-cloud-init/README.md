@@ -1,4 +1,4 @@
-# Cloud-init learning notes
+# Cloud-init
 
 ## Goal
 
@@ -119,9 +119,3 @@ multipass exec testpress-lab -- sudo tail -n 80 /var/log/cloud-init-output.log
 multipass exec testpress-lab -- sudo docker ps -a
 multipass exec testpress-lab -- sudo docker logs testpress-app
 ```
-
-## References
-
-- [Cloud-init boot stages](https://docs.cloud-init.io/en/latest/explanation/boot.html)
-- [First boot determination](https://docs.cloud-init.io/en/latest/explanation/first_boot.html)
-- [Multipass with cloud-init](https://canonical.com/multipass/docs/stable/how-to-guides/manage-instances/launch-customized-instances-with-multipass-and-cloud-init/)

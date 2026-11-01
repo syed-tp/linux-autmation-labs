@@ -1,4 +1,4 @@
-# Rclone notes
+# Rclone
 
 I used two local folders: source and destination. Source contains the files I want to transfer. It also has a notes subfolder to test nested files.
 
@@ -66,7 +66,7 @@ dd if=/dev/urandom of=02-rclone/data/source/large-test.bin \
 
 Creates a 100 MiB file for testing. dd reads random bytes from the input and writes them to the output file. It overwrites the output file if it already exists.
 
-Note: local transfers do not need an rclone.conf file, so the missing config notice is okay.
+Local transfers do not need an rclone.conf file, so the missing config notice is okay.
 
 ## Working with S3
 
@@ -107,7 +107,7 @@ export RCLONE_S3_PROVIDER=Minio
 export RCLONE_S3_ENDPOINT=http://127.0.0.1:9000
 ```
 
-I entered the same credentials used to start MinIO. The password is hidden while typing, and no credentials are written into the script or notes.
+I entered the same credentials used to start MinIO. The password is hidden while typing, and no credentials are saved in the script or README.
 
 ```bash
 rclone --config /dev/null mkdir :s3:testpress-lab
@@ -116,7 +116,7 @@ rclone --config /dev/null lsd :s3:
 
 mkdir creates the bucket, and lsd lists buckets. :s3: creates a connection on the fly, using the settings above. --config /dev/null makes rclone use an empty configuration instead of a saved file.
 
-My understanding: configuration-free means no persistent configuration file. The connection still needs an endpoint and credentials.
+Configuration-free means no persistent configuration file. The connection still needs an endpoint and credentials.
 
 ### Upload, list, and download
 
@@ -223,12 +223,25 @@ rclone --config /dev/null \
 
 The credentials still come from the exported environment variables. This initially returned 403 AccessDenied. After entering and exporting the credentials again in that terminal, it worked.
 
-What I learned: exported variables belong to that shell and its child processes. A new terminal does not automatically inherit exports made in another terminal. Endpoint flags tell rclone where to connect; they do not authenticate it.
+Exported variables belong to that shell and its child processes. A new terminal does not automatically inherit exports made in another terminal. Endpoint flags tell rclone where to connect; they do not authenticate it.
 
-### Notes to remember
+### Summary
 
 - Upload, download, and bucket-to-bucket transfer all use copy; the direction changes.
 - --config /dev/null and :s3: let the command run without a saved remote.
 - For another endpoint, pass its URL and matching credentials. I tested one local endpoint so far.
 - For production, I would inject short-lived credentials from a secret manager or workload identity, rather than put secrets in command history, scripts, or Git. Local root credentials are only for this lab.
-- PDF samples, changed-content sync, automatic retry failure testing, and additional credentials/endpoints remain separate follow-up experiments. A reusable transfer.sh is not included in these notes.
+- PDF samples, changed-content sync, automatic retry failure testing, and additional credentials/endpoints remain separate follow-up experiments.
+
+## Transfer script
+
+I put the common command in transfer.sh. It takes the operation, source, and destination:
+
+```bash
+bash 02-rclone/transfer.sh copy 02-rclone/data/source :s3:testpress-lab
+bash 02-rclone/transfer.sh sync 02-rclone/data/source 02-rclone/data/destination
+```
+
+Export the S3 variables from the section above before using an S3 destination. The script uses no saved rclone.conf, shows progress, and appends activity and errors to 02-rclone/logs/transfer.log. A failed rclone command makes the script return its failure exit code; check it immediately with `echo $?`.
+
+Sync deletes destination-only files. Preview the same source and destination with `rclone --config /dev/null sync SOURCE DESTINATION --dry-run` before running the script with sync.
