@@ -1,0 +1,23 @@
+[Unit]
+Description=Testpress Cricket Heartbeat Worker
+StartLimitIntervalSec=30
+StartLimitBurst=3
+
+[Service]
+Type=simple
+User=cricket-worker
+Group=cricket-worker
+WorkingDirectory=@APP_DIR@
+EnvironmentFile=/etc/cricket-worker.env
+ExecStart=/usr/bin/python3 -u @APP_DIR@/app.py
+Restart=on-failure
+RestartSec=3
+TimeoutStopSec=10
+StandardOutput=journal
+StandardError=journal
+CPUQuota=20%
+MemoryMax=50M
+MemorySwapMax=0
+
+[Install]
+WantedBy=multi-user.target
