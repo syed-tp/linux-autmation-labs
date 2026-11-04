@@ -1,6 +1,6 @@
 # Linux Automation Labs
 
-Hands-on exercises for provisioning Linux servers and transferring files using cloud-init and rclone. Everything runs locally, without paid cloud services.
+Hands-on exercises for setting up Linux servers, transferring files, and managing processes with cloud-init, rclone, and systemd. Everything runs locally, without paid cloud services.
 
 ## Setup
 
@@ -37,3 +37,14 @@ Copy, move, sync, and verify files locally and with a local MinIO S3 endpoint. I
 - [Transfer script](02-rclone/transfer.sh)
 
 MinIO runs directly on the host. Its setup is separate from the root setup script.
+
+### 3. Process Management & systemd
+
+Run a cricket commentary worker, handle shutdown signals, and use systemd to manage restarts, logs, and resource limits. Includes a pitch service dependency experiment.
+
+- [Setup and usage](03-process-management-systemd/README.md)
+- [Walkthrough and screenshots](03-process-management-systemd/experiments.md)
+- [Commentary service template](03-process-management-systemd/cricket-worker.service.template)
+- [Pitch service template](03-process-management-systemd/cricket-pitch.service.template)
+
+Requires Linux with systemd, including WSL with systemd enabled. This lab has its own setup script; some tests and screenshots are still marked as pending in the walkthrough.
